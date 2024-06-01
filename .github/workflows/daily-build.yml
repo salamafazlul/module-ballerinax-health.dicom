@@ -1,0 +1,49 @@
+# This workflow uploads the code coverage results for the project to Codecov on a daily basis.
+name: Daily build
+
+on:
+  schedule:
+    - cron: '30 18 * * *'  # 00:00 in LK time (GMT+5:30)
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Latest Ballerina Version
+        uses: ballerina-platform/setup-ballerina@v1.1.0
+        with:
+          version: latest
+
+      - name: Build and Test Ballerina Projects (Excluding Gradle Projects)
+        run: |
+          # Define list of folders to skip building using ballerina build
+          SKIP_FOLDERS=( "core/ballerina" "dicomservice/ballerina" )
+
+          # Find Ballerina Project Folders
+          BALLERINA_PROJECT_FOLDERS=$(find . -name "Ballerina.toml" -printf '%p\n' | sed 's/\/Ballerina.toml$//' | sort -u | tr '\n' ' ')
+
+          # Convert BALLERINA_PROJECT_FOLDERS to an array
+          read -r -a BALLERINA_PROJECTS <<<"${BALLERINA_PROJECT_FOLDERS}"
+
+          echo "Building and testing the following Ballerina projects:"
+          for folder in "${BALLERINA_PROJECTS[@]}"; do
+            if [[ ! "${SKIP_FOLDERS[@]}" =~ "$folder" ]]; then
+              echo "$folder"  # Print the included folder for reference
+              cd "$folder"  # Set working directory for each iteration
+              bal build
+              bal test --test-report --code-coverage --coverage-format=xml
+              cd ..        # Move back to the original directory
+            fi
+          done
+
+      - name: Upload Coverage Reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true  # Optional: Specify if the CI build should fail when Codecov fails.
