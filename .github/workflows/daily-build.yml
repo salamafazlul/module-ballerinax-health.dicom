@@ -23,7 +23,7 @@ jobs:
       - name: Build and Test Ballerina Projects (Excluding Gradle Projects)
         run: |
           # Define list of folders to skip building using ballerina build
-          SKIP_FOLDERS=( "core/ballerina" "dicomservice/ballerina" )
+          SKIP_FOLDERS=( "./core/ballerina" "./dicomservice/ballerina" )
 
           # Find Ballerina Project Folders
           BALLERINA_PROJECT_FOLDERS=$(find . -name "Ballerina.toml" -printf '%p\n' | sed 's/\/Ballerina.toml$//' | sort -u | tr '\n' ' ')
