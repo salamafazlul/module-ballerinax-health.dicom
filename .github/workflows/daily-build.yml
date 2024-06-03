@@ -22,7 +22,7 @@ jobs:
 
       - name: Find Gradle Projects
         run: |
-          gradle_folders=$(find . -maxdepth 1 -name "gradlew" -printf '%d\n' | sort -u)
+          gradle_folders=$(find . -name "gradlew" -printf '%d\n' | sort -u)
 
           if [[ ${#gradle_folders[@]} -eq 0 ]]; then
             echo "No Gradle projects found!"
