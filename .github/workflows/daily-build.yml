@@ -20,9 +20,19 @@ jobs:
         with:
           version: latest
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: adopt
+          java-version: 17.0.7
+
+      - name: Build with Gradle
+        run: |
+          find . -name gradlew -type f -print -exec sh -c 'dirname {} && cd "{}.." && ./gradlew clean build' \;
+
       - name: Build and Test Ballerina Projects (Excluding Gradle Projects)
         run: |
-          # Define list of folders to skip building using ballerina build
+          # Define list of folders to skip building using Ballerina Build
           SKIP_FOLDERS=( "core/ballerina" "dicomservice/ballerina" )
 
           # Find Ballerina Project Folders and remove leading ./
