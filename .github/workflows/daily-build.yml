@@ -20,16 +20,19 @@ jobs:
         with:
           version: latest
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: adopt
-          java-version: 17.0.7
-
-      - name: Build with Gradle
+      - name: Find Gradle Projects
         run: |
-          find . -name gradlew -type f -print -exec sh -c ' "{}/clean build" ' sh {} \;
+          gradle_folders=$(find . -maxdepth 1 -name "gradlew" -printf '%d\n' | sort -u)
 
+          if [[ ${#gradle_folders[@]} -eq 0 ]]; then
+            echo "No Gradle projects found!"
+            exit 1
+          fi
+
+          echo "Gradle projects found in:"
+          for folder in "${gradle_folders[@]}"; do
+            echo "  - $folder"  # Using single space for better formatting
+          done
 
       - name: Build and Test Ballerina Projects (Excluding Gradle Projects)
         run: |
