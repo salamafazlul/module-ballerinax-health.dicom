@@ -28,7 +28,7 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          find . -name gradlew -type f -print -exec sh -c 'gradlew clean build in "{}.."' \;
+          find . -name gradlew -type f -print -exec sh -c 'cd "{}.." && "{}/gradlew clean build"' \;
 
       - name: Build and Test Ballerina Projects (Excluding Gradle Projects)
         run: |
