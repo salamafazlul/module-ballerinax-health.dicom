@@ -35,11 +35,11 @@ jobs:
           # Convert GRADLE_PROJECT_FOLDERS to an array
           read -r -a GRADLE_PROJECTS <<<"${GRADLE_PROJECT_FOLDERS}"
 
-          sh 'chmod +x gradlew'  # Add execute permission
 
           for folder in "${GRADLE_PROJECTS[@]}"; do
             echo " building $folder"
             cd "$folder"
+            sh 'chmod +x gradlew'  # Add execute permission
             ./gradlew build
             ./gradlew test
             cd ..
