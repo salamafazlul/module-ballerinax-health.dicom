@@ -28,16 +28,19 @@ jobs:
 
       - name: Find Gradle Projects
         run: |
-        
+          # Find Gradle Projects Folders
           GRADLE_PROJECT_FOLDERS=$(find . -name "gradlew" -printf '%p\n' | sed 's/\/gradlew$//' | sed 's,^./,,' | sort -u | tr '\n' ' ')
           echo "$GRADLE_PROJECT_FOLDERS"
 
           # Convert GRADLE_PROJECT_FOLDERS to an array
-          read -r -a GRADLE_FOLDERS <<<"${GRADLE_PROJECT_FOLDERS}"
+          read -r -a GRADLE_PROJECTS <<<"${GRADLE_PROJECT_FOLDERS}"
 
-          echo "Gradle projects found in:"
-          for folder in "${GRADLE_FOLDERS[@]}"; do
-            echo "  - $folder"  # Using single space for better formatting
+          for folder in "${GRADLE_PROJECTS[@]}"; do
+            echo " building $folder"
+            cd "$folder"
+            gradlew build
+            gradlew test
+            cd ..
           done
 
       - name: Build and Test Ballerina Projects (Excluding Gradle Projects)
