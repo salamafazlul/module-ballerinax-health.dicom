@@ -23,8 +23,11 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: adopt
+          distribution: "temurin"
           java-version: 17.0.7
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
       - name: Build Gradle Projects
         run: |
@@ -35,11 +38,9 @@ jobs:
           # Convert GRADLE_PROJECT_FOLDERS to an array
           read -r -a GRADLE_PROJECTS <<<"${GRADLE_PROJECT_FOLDERS}"
 
-
           for folder in "${GRADLE_PROJECTS[@]}"; do
             echo " building $folder"
             cd "$folder"
-            sh 'chmod +x gradlew'  # Add execute permission
             ./gradlew build
             ./gradlew test
             cd ..
