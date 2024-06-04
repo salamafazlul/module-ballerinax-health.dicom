@@ -26,7 +26,7 @@ jobs:
           distribution: adopt
           java-version: 17.0.7
 
-      - name: Find Gradle Projects
+      - name: Build Gradle Projects
         run: |
           # Find Gradle Projects Folders
           GRADLE_PROJECT_FOLDERS=$(find . -name "gradlew" -printf '%p\n' | sed 's/\/gradlew$//' | sed 's,^./,,' | sort -u | tr '\n' ' ')
@@ -38,8 +38,8 @@ jobs:
           for folder in "${GRADLE_PROJECTS[@]}"; do
             echo " building $folder"
             cd "$folder"
-            gradlew build
-            gradlew test
+            ./gradlew build
+            ./gradlew test
             cd ..
           done
 
