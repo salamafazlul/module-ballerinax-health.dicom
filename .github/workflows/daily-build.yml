@@ -29,16 +29,14 @@ jobs:
       - name: Find Gradle Projects
         run: |
         
-          gradle_folders=$(find . -name "gradlew" -printf '%p\n' | sed 's/\/gradlew$//' | sed 's,^./,,' | sort -u | tr '\n' ' ')
-          echo "$gradle_folders"
+          GRADLE_PROJECT_FOLDERS=$(find . -name "gradlew" -printf '%p\n' | sed 's/\/gradlew$//' | sed 's,^./,,' | sort -u | tr '\n' ' ')
+          echo "$GRADLE_PROJECT_FOLDERS"
 
-          if [[ ${#gradle_folders[@]} -eq 0 ]]; then
-            echo "No Gradle projects found!"
-            exit 1
-          fi
+          # Convert GRADLE_PROJECT_FOLDERS to an array
+          read -r -a GRADLE_FOLDERS <<<"${GRADLE_PROJECT_FOLDERS}"
 
           echo "Gradle projects found in:"
-          for folder in "${gradle_folders[@]}"; do
+          for folder in "${GRADLE_FOLDERS[@]}"; do
             echo "  - $folder"  # Using single space for better formatting
           done
 
