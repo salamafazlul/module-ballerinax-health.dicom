@@ -29,7 +29,7 @@ jobs:
       - name: Find Gradle Projects
         run: |
         
-          gradle_folders=$(find . -name "gradlew" -printf '%d\n' | sort -u)
+          gradle_folders=$(find . -name "gradlew" -printf '%p\n' | sed 's/\/gradlew$//' | sed 's,^./,,' | sort -u | tr '\n' ' ')
           echo "$gradle_folders"
 
           if [[ ${#gradle_folders[@]} -eq 0 ]]; then
