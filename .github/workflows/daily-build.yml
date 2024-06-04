@@ -25,10 +25,7 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 17.0.7
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
+          
       - name: Build Gradle Projects
         run: |
           # Find Gradle Projects Folders
@@ -41,6 +38,7 @@ jobs:
           for folder in "${GRADLE_PROJECTS[@]}"; do
             echo " building $folder"
             cd "$folder"
+            chmod +x gradlew
             ./gradlew build
             ./gradlew test
             cd ..
