@@ -27,6 +27,9 @@ jobs:
           java-version: 17.0.7
           
       - name: Build Gradle Projects
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_PAT: ${{ secrets.PACKAGE_READ_TOKEN }}
         run: |
           # Find Gradle Projects Folders
           GRADLE_PROJECT_FOLDERS=$(find . -name "gradlew" -printf '%p\n' | sed 's/\/gradlew$//' | sed 's,^./,,' | sort -u | tr '\n' ' ')
