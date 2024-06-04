@@ -25,27 +25,6 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 17.0.7
-          
-      - name: Build Gradle Projects
-        env:
-          GITHUB_USERNAME: ${{ github.actor }}
-          GITHUB_PAT: ${{ secrets.PACKAGE_READ_TOKEN }}
-        run: |
-          # Find Gradle Projects Folders
-          GRADLE_PROJECT_FOLDERS=$(find . -name "gradlew" -printf '%p\n' | sed 's/\/gradlew$//' | sed 's,^./,,' | sort -u | tr '\n' ' ')
-          echo "$GRADLE_PROJECT_FOLDERS"
-
-          # Convert GRADLE_PROJECT_FOLDERS to an array
-          read -r -a GRADLE_PROJECTS <<<"${GRADLE_PROJECT_FOLDERS}"
-
-          for folder in "${GRADLE_PROJECTS[@]}"; do
-            echo " building $folder"
-            cd "$folder"
-            chmod +x gradlew
-            ./gradlew build
-            ./gradlew test
-            cd ..
-          done
 
       - name: Build and Test Ballerina Projects (Excluding Gradle Projects)
         run: |
@@ -68,6 +47,29 @@ jobs:
               cd ..        # Move back to the original directory
             fi
           done
+              
+      - name: Build Gradle Projects
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_PAT: ${{ secrets.PACKAGE_READ_TOKEN }}
+        run: |
+          # Find Gradle Projects Folders
+          GRADLE_PROJECT_FOLDERS=$(find . -name "gradlew" -printf '%p\n' | sed 's/\/gradlew$//' | sed 's,^./,,' | sort -u | tr '\n' ' ')
+          echo "$GRADLE_PROJECT_FOLDERS"
+
+          # Convert GRADLE_PROJECT_FOLDERS to an array
+          read -r -a GRADLE_PROJECTS <<<"${GRADLE_PROJECT_FOLDERS}"
+
+          for folder in "${GRADLE_PROJECTS[@]}"; do
+            echo " building $folder"
+            cd "$folder"
+            chmod +x gradlew
+            ./gradlew build
+            ./gradlew test
+            cd ..
+          done
+
+      
 
       - name: Upload Coverage Reports to Codecov
         uses: codecov/codecov-action@v4.0.1
