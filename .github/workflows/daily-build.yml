@@ -20,9 +20,17 @@ jobs:
         with:
           version: latest
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: adopt
+          java-version: 17.0.7
+
       - name: Find Gradle Projects
         run: |
+        
           gradle_folders=$(find . -name "gradlew" -printf '%d\n' | sort -u)
+          echo "$gradle_folders"
 
           if [[ ${#gradle_folders[@]} -eq 0 ]]; then
             echo "No Gradle projects found!"
